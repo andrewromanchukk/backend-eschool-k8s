@@ -5,8 +5,12 @@ orbs:
 workflows:
   build_and_push_image:
     jobs:
-      - gcp-gcr/build-and-push-image:
+      - gcp-gcr/tag-image:
           context: my-context1
+          extra-build-args: "--build-arg DB_HOST=$DB_HOST --build-arg DB_PASSWORD=$DB_PASSWORD --build-arg DB_USER=$DB_USER "
           image: my-image
           registry-url: us.gcr.io
+          source-tag: mytag1
+          target-tag: mytag2
+
       
