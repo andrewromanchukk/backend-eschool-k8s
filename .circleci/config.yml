@@ -5,7 +5,7 @@ version: 2.1
 workflows:
   build_and_push image:
     jobs:
-      - build-and-push:
+      - gcp-gcr/build-and-push-image:
           context: my-context1
           image: backend-image
           registry-url: us.gcr.io
