@@ -3,7 +3,6 @@ orbs:
   gcp-gcr: circleci/gcp-gcr@0.13.0
 version: 2.1
 workflows:
-  install_and_configure_cli:
     jobs:
       - gcp-cli/install_and_initialize_cli:
           context: my-context1
