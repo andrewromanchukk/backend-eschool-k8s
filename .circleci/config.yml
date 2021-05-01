@@ -3,7 +3,7 @@ orbs:
   gcp-gcr: circleci/gcp-gcr@0.13.0
 version: 2.1
 workflows:
-  build_and_push image:
+  build_and_push_image:
     jobs:
       - gcp-gcr/build-and-push-image:
           context: my-context1
