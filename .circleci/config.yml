@@ -7,8 +7,6 @@ workflows:
     jobs:
       - gcp-gcr/build-and-push-image:
           context: my-context1
-          image: backend-image
+          image: my-image
           registry-url: us.gcr.io
-          source-tag: mytag1
-          target-tag: mytag2
       
