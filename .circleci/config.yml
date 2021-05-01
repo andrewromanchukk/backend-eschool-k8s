@@ -7,12 +7,9 @@ workflows:
     jobs:
       - gcp-gcr/build-and-push-image:
           context: my-context1
-          extra-build-args: "--build-arg DB_HOST=$DB_HOST --build-arg DB_PASSWORD=$DB_PASSWORD --build-arg DB_USER=$DB_USER "
           dockerfile: Dockerfile
+          extra_build_args: "--build-arg DB_HOST=$DB_HOST --build-arg DB_PASSWORD=$DB_PASSWORD --build-arg DB_USER=$DB_USER "
           path: .
+          tag: "latest,v0.1.$CIRCLE_BUILD_NUM"
           image: my-image
           registry-url: us.gcr.io
-          source-tag: mytag1
-          target-tag: mytag2
-
-      
