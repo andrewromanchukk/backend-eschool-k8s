@@ -6,14 +6,17 @@ jobs:
       - checkout
       - gcp-gcr/gcr-auth
       - gcp-gcr/build-image:
+          context: my-context1
           image: orb-test
           no_output_timeout: 20m
           registry-url: eu.gcr.io
       - gcp-gcr/push-image:
+          context: my-context1
           digest-path: /tmp/digest.txt
           image: orb-test
           registry-url: eu.gcr.io
       - run:
+          context: my-context1
           command: |
             echo "Digest is: $(</tmp/digest.txt)"
 version: 2.1
