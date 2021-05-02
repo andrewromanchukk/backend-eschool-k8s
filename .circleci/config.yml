@@ -16,7 +16,6 @@ jobs:
           image: orb-test
           registry-url: eu.gcr.io
       - run:
-          context: my-context1
           command: |
             echo "Digest is: $(</tmp/digest.txt)"
 version: 2.1
