@@ -1,11 +1,48 @@
+version: 2.1
+
 orbs:
   gcp-cli: circleci/gcp-cli@2.1.0
   gcp-gcr: circleci/gcp-gcr@0.13.0
-version: 2.1
+jobs:
+  build-and-push-image:
+    docker:
+      - image: cimg/base:2020.01
+    resource_class: small
+    steps:
+      - setup_remote_docker
+      - attach_workspace:
+          at: ~/project/
+      - gcp-gcr/gcr-auth
+      - gcp-gcr/build-image:
+          dockerfile: "Dockerfile"
+          image: eschool-be
+          registry-url: eu.gcr.io
+          tag: ${CIRCLE_SHA1:0:7}
+      # Push and tag docker image according to commit SHA1 hash 
+      - gcp-gcr/push-image:
+          digest-path: /tmp/digest.txt
+          image: dtapi-be
+          registry-url: eu.gcr.io
+          tag: ${CIRCLE_SHA1:0:7}
+      # Tag pusshed image as latest
+      - gcp-gcr/tag-image:
+          image: dtapi-be
+          registry-url: eu.gcr.io
+          source-tag: ${CIRCLE_SHA1:0:7}
+          target-tag: latest
+      # The path to save the RepoDigest of the pushed image
+      - run:
+          name: sha256 Digest
+          command: |
+            echo "Digest is: $(</tmp/digest.txt)"
 workflows:
-  build_and_push_image:
+  build-and-push-image:
     jobs:
-      - gcp-gcr/build-and-push-image:
+      # build and push every commit
+      
+      - build-and-push-image:
           context: my-context1
-          image: my-image
-          registry-url: us.gcr.io
+          filters:
+            branches:
+              only:
+                - master
