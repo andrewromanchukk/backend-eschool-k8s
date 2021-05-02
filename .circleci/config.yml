@@ -2,26 +2,11 @@ version: 2.1
 orbs:
   gcp-cli: circleci/gcp-cli@2.1.0
   gcp-gcr: circleci/gcp-gcr@0.13.0
-jobs:
-  build-and-push:
-    executor: gcp-gcr/default
-    steps:
-      - checkout
-      - gcp-gcr/gcr-auth
-      - gcp-gcr/build-image:
-          image: orb-test
-          no_output_timeout: 20m
-          registry-url: eu.gcr.io
-      - gcp-gcr/push-image:
-          digest-path: /tmp/digest.txt
-          image: orb-test
-          registry-url: eu.gcr.io
-      - run:
-          command: |
-            echo "Digest is: $(</tmp/digest.txt)"
-
+version: 2.1
 workflows:
-  commit:
+  build_and_push_image:
     jobs:
-      - build-and-push:
-          context: my-context1
+      - gcp-gcr/build-and-push-image:
+          context: myContext
+          image: my-image
+          registry-url: us.gcr.io
