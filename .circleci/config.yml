@@ -23,4 +23,5 @@ jobs:
 workflows:
   commit:
     jobs:
-      - build-and-push
+      - build-and-push:
+          context: my-context1
