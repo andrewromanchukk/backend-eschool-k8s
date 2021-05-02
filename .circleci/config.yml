@@ -4,6 +4,33 @@ orbs:
   gcp-cli: circleci/gcp-cli@2.1.0
   gcp-gcr: circleci/gcp-gcr@0.13.0
 jobs:
+  build-artifact:
+    docker:
+      - image: cimg/base:2020.01
+    resource_class: small
+    steps:
+      - checkout
+      - run: git clone --depth 1 https://github.com/andrewromanchukk/backend-eschool-k8s.git --single-branch
+      - run:
+          name: Build eschool
+          command: |
+            ARTIFACT="artifact"
+            mkdir "$ARTIFACT"
+            cp -r koseven/modules "$ARTIFACT"
+            cp -r koseven/system "$ARTIFACT"
+            cp koseven/public/index.php "$ARTIFACT"
+            cp -r application "$ARTIFACT"
+            cp .htaccess "$ARTIFACT"
+            mkdir -p "$ARTIFACT/application/cache/"
+            mkdir -p "$ARTIFACT/application/logs/"
+            tar -czf dtapi_be_artifact.tar.gz -C "./$ARTIFACT" .
+      - store_artifacts:
+          path: dtapi_be_artifact.tar.gz
+      - persist_to_workspace:
+          root: .
+          paths:
+            - "artifact"
+            - "docker"
   build-and-push-image:
     docker:
       - image: cimg/base:2020.01
@@ -15,7 +42,7 @@ jobs:
       - gcp-gcr/gcr-auth
       - gcp-gcr/build-image:
           dockerfile: "Dockerfile"
-          image: eschool-be
+          image: dtapi-be
           registry-url: eu.gcr.io
           tag: ${CIRCLE_SHA1:0:7}
       # Push and tag docker image according to commit SHA1 hash 
@@ -35,11 +62,12 @@ jobs:
           name: sha256 Digest
           command: |
             echo "Digest is: $(</tmp/digest.txt)"
+
 workflows:
   build-and-push-image:
     jobs:
       # build and push every commit
-      
+      - build-artifact
       - build-and-push-image:
           context: my-context1
           filters:
