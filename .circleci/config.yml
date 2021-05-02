@@ -9,28 +9,27 @@ jobs:
       - image: cimg/base:2020.01
     resource_class: small
     steps:
+      # check out source code to working directory
       - checkout
-      - run: git clone --depth 1 https://github.com/andrewromanchukk/backend-eschool-k8s.git --single-branch
-      - run:
-          name: Build eschool
-          command: |
-            ARTIFACT="artifact"
-            mkdir "$ARTIFACT"
-            cp -r koseven/modules "$ARTIFACT"
-            cp -r koseven/system "$ARTIFACT"
-            cp koseven/public/index.php "$ARTIFACT"
-            cp -r application "$ARTIFACT"
-            cp .htaccess "$ARTIFACT"
-            mkdir -p "$ARTIFACT/application/cache/"
-            mkdir -p "$ARTIFACT/application/logs/"
-            tar -czf dtapi_be_artifact.tar.gz -C "./$ARTIFACT" .
-      - store_artifacts:
-          path: dtapi_be_artifact.tar.gz
-      - persist_to_workspace:
-          root: .
+      # restore the saved cache after the first run or if `pom.xml` has changed
+      - restore_cache:
+          key: eschool-{{ checksum "pom.xml" }}
+      # gets the project dependencies
+      - run: mvn dependency:go-offline
+      # saves the project dependencies
+      - save_cache:
           paths:
-            - "artifact"
-            - "docker"
+            - ~/.m2
+          key: eschool-{{ checksum "pom.xml" }}
+      # run unit tests
+      - run: mvn package -Dtest=\!ScheduleControllerIntegrationTest*
+
+      - store_test_results:
+          # uploads the test metadata from the `target/surefire-reports` to CircleCI dashboard.
+          path: target/surefire-reports
+
+      - store_artifacts: # store the uberjar as an artifact
+          path: target/eschool.jar
   build-and-push-image:
     docker:
       - image: cimg/base:2020.01
