@@ -10,6 +10,6 @@ workflows:
           dockerfile: Dockerfile
           extra_build_args: "--build-arg DB_HOST='${DB_HOST}' --build-arg DB_PASSWORD='${DB_PASSWORD}' --build-arg DB_USER='${DB_USER}'"
           # path: .
-          tag: "latest
+          tag: "latest"
           image: my-image
           registry-url: us.gcr.io
