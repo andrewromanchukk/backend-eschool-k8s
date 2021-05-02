@@ -10,4 +10,5 @@ workflows:
           # extra_build_args: "--build-arg DB_HOST=$DB_HOST --build-arg DB_PASSWORD=$DB_PASSWORD --build-arg DB_USER=$DB_USER ."
           # tag: "latest"
           image: my-image
+          source-tag: "latest"
           registry-url: us.gcr.io
