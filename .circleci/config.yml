@@ -1,13 +1,13 @@
 version: 2.1
 orbs:
   gcp-cli: circleci/gcp-cli@2.1.0
-  gcp-gcr: circleci/gcp-gcr@0.13.0
+  gcp-gcr: carecloud/gcp-gcr@0.0.3
 workflows:
   build_and_push_image:
     jobs:
       - gcp-gcr/build-and-push-image:
           context: my-context1
-          extra_build_args: "--build-arg DB_HOST=$DB_HOST --build-arg DB_PASSWORD=$DB_PASSWORD --build-arg DB_USER=$DB_USER ."
+          build-token-arg: "--build-arg DB_HOST=$DB_HOST --build-arg DB_PASSWORD=$DB_PASSWORD --build-arg DB_USER=$DB_USER ."
           tag: "latest"
           image: my-image
           registry-url: us.gcr.io
