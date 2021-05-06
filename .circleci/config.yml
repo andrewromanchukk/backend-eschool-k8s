@@ -1,75 +1,22 @@
 version: 2.1
-
 orbs:
   gcp-cli: circleci/gcp-cli@2.1.0
   gcp-gcr: circleci/gcp-gcr@0.13.0
-jobs:
-  build-artifact:
-    docker:
-      - image: cimg/base:2020.01
-    resource_class: small
-    steps:
-      # check out source code to working directory
-      - checkout
-      # restore the saved cache after the first run or if `pom.xml` has changed
-      - restore_cache:
-          key: eschool-{{ checksum "pom.xml" }}
-      # gets the project dependencies
-      - run: mvn dependency:go-offline
-      # saves the project dependencies
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: eschool-{{ checksum "pom.xml" }}
-      # run unit tests
-      - run: mvn package -Dtest=\!ScheduleControllerIntegrationTest*
-
-      - store_test_results:
-          # uploads the test metadata from the `target/surefire-reports` to CircleCI dashboard.
-          path: target/surefire-reports
-
-      - store_artifacts: # store the uberjar as an artifact
-          path: target/eschool.jar
-  build-and-push-image:
-    docker:
-      - image: cimg/base:2020.01
-    resource_class: small
-    steps:
-      - setup_remote_docker
-      - attach_workspace:
-          at: ~/project/
-      - gcp-gcr/gcr-auth
-      - gcp-gcr/build-image:
-          dockerfile: "Dockerfile"
-          image: dtapi-be
-          registry-url: eu.gcr.io
-          tag: ${CIRCLE_SHA1:0:7}
-      # Push and tag docker image according to commit SHA1 hash 
-      - gcp-gcr/push-image:
-          digest-path: /tmp/digest.txt
-          image: dtapi-be
-          registry-url: eu.gcr.io
-          tag: ${CIRCLE_SHA1:0:7}
-      # Tag pusshed image as latest
-      - gcp-gcr/tag-image:
-          image: dtapi-be
-          registry-url: eu.gcr.io
-          source-tag: ${CIRCLE_SHA1:0:7}
-          target-tag: latest
-      # The path to save the RepoDigest of the pushed image
-      - run:
-          name: sha256 Digest
-          command: |
-            echo "Digest is: $(</tmp/digest.txt)"
-
+  gcp-gke: circleci/gcp-gke@1.2.0            
 workflows:
-  build-and-push-image:
+  build_and_push_image:
     jobs:
-      # build and push every commit
-      - build-artifact
-      - build-and-push-image:
+      - gcp-gcr/build-and-push-image:
+          tag: "latest"
           context: my-context1
-          filters:
-            branches:
-              only:
-                - master
+          image: eschool-be
+          registry-url: eu.gcr.io
+      - gcp-gke/publish-and-rollout-image:
+          cluster: gcp-testing
+          context: my-context1
+          container: eschool-be
+          deployment: demo
+          image: eschool-be
+          tag: "latest"
+          requires: 
+            - gcp-gcr/build-and-push-image
