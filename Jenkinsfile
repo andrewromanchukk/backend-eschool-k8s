@@ -7,12 +7,12 @@ node {
     checkout scm
     stage('12345'){
         docker.withRegistry('https://eu.gcr.io/igneous-sum-312016/eschool_backend', 'gcr:gcr_eschool') {
-        def customImage = docker.build("igneous-sum-312016/eschool_backend:${env.BUILD_NUMBER}")
+        def customImage = docker.build("igneous-sum-312016/eschool_backend:latest")
 
         /* Push the container to the custom Registry */
         customImage.push()
 
-                customImage.push('latest')
+                customImage.push($BUILD_NUMBER)
     }
     }
     
