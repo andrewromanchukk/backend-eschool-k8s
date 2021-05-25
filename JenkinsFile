@@ -1,6 +1,8 @@
 node {
     dockerfile {
-        additionalBuildArgs "--build-arg DB_USER=${DB_USER} --build-arg DB_HOST=${DB_HOST} --build-arg DB_PASSWORD=${DB_PASSWORD}"
+        additionalBuildArgs "--build-arg DB_USER=${DB_USER}\
+         --build-arg DB_HOST=${DB_HOST}\
+          --build-arg DB_PASSWORD=${DB_PASSWORD}"
     }
     checkout scm
     stage('12345'){
