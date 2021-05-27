@@ -13,7 +13,10 @@ pipeline {
       stage("Build image") {
             steps {
                 script {
-                    myapp = docker.build("igneous-sum-312016/hellowhale:${env.BUILD_ID}", "--build-arg DB_HOST=$DB_HOST", "--build-arg DB_PASSWORD=$DB_PASSWORD", "--build-arg DB_USER=$DB_USER" )
+                    myapp = docker.build("igneous-sum-312016/hellowhale:${env.BUILD_ID}",\
+                     "--build-arg DB_HOST=$DB_HOST",\
+                      "--build-arg DB_PASSWORD=$DB_PASSWORD",\
+                      "--build-arg DB_USER=$DB_USER" )
                 }
             }
         }
