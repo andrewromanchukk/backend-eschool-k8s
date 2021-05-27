@@ -24,7 +24,7 @@ pipeline {
       stage("Push image") {
             steps {
                 script {
-                    docker.withRegistry('https://eu.gcr.io/igneous-sum-312016/eschool_backend', 'gcr:gcr_eschool') {
+                    docker.withRegistry('https://eu.gcr.io/igneous-sum-312016/hellowhale', 'gcr:gcr_eschool') {
                             myapp.push("latest")
                             myapp.push("${env.BUILD_ID}")
                     }
