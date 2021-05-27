@@ -12,8 +12,8 @@ pipeline {
     
       stage("Build image") {
         environement{
-          DB_HOST = credentials('DB_HOST'),
-          DB_USER = credentials('DB_USER'),
+          DB_HOST = credentials('DB_HOST')
+          DB_USER = credentials('DB_USER')
           DB_PASSWORD = credentials('DB_PASSWORD')
         }
             steps {
