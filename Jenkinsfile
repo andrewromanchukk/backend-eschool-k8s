@@ -11,13 +11,9 @@ pipeline {
     }
     
       stage("Build image") {
-        
             steps {
                 script {
-                    myapp = docker.build("igneous-sum-312016/hellowhale:${env.BUILD_ID}",\
-                      "--build-arg DB_HOST=${env.DB_HOST}", \
-                       "--build-arg DB_PASSWORD=${env.DB_PASSWORD}", \
-                       "--build-arg DB_USER=${env.DB_USER} ." )
+                    myapp = docker.build("igneous-sum-312016/hellowhale:${env.BUILD_ID}")
                 }
             }
         }
@@ -34,14 +30,14 @@ pipeline {
         }
 
     
-//     stage('Deploy App') {
-//       steps {
-//         script {
-//           kubernetesDeploy(configs: "hellowhale.yml", kubeconfigId: "mykubeconfig")
-//         }
-//       }
-//     }
+  //   stage('Deploy App') {
+  //     steps {
+  //       script {
+  //         kubernetesDeploy(configs: "hellowhale.yml", kubeconfigId: "mykubeconfig")
+  //       }
+  //     }
+  //   }
 
-   }
-
+  // }
+  }
 }
