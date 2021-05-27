@@ -13,7 +13,7 @@ pipeline {
       stage("Build image") {
             steps {
                 script {
-                    myapp = docker.build("igneous-sum-312016/hellowhale:${env.BUILD_ID}")
+                    myapp = docker.build("igneous-sum-312016/hellowhale:${env.BUILD_ID}", "--build-arg DB_HOST=${env.DB_HOST}")
                 }
             }
         }
