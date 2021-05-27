@@ -16,8 +16,8 @@ pipeline {
                 script {
                     myapp = docker.build("igneous-sum-312016/hellowhale:${env.BUILD_ID}",\
                       "--build-arg DB_HOST=${env.DB_HOST}", \
-                       "--build-arg DB_PASSWORD=${env.DB_PASSWORD}"\
-                       "--build-arg DB_USER=${env.DB_USER}" )
+                       "--build-arg DB_PASSWORD=${env.DB_PASSWORD}", \
+                       "--build-arg DB_USER=${env.DB_USER} ." )
                 }
             }
         }
