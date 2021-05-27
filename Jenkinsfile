@@ -1,19 +1,43 @@
-node {
-    dockerfile {
-        additionalBuildArgs "--build-arg DB_USER=${DB_USER}\
-         --build-arg DB_HOST=${DB_HOST}\
-          --build-arg DB_PASSWORD=${DB_PASSWORD}"
-    }
-    checkout scm
-    stage('12345'){
-        docker.withRegistry('https://eu.gcr.io/igneous-sum-312016/eschool_backend', 'gcr:gcr_eschool') {
-        def customImage = docker.build("igneous-sum-312016/eschool_backend:${env.BUILD_NUMBER}")
+pipeline {
 
-        /* Push the container to the custom Registry */
-        customImage.push()
+  agent any
 
-                customImage.push('latest')
-    }
+  stages {
+
+    stage('Checkout Source') {
+      steps {
+        git url:'https://github.com/andrewromanchukk/backend-eschool-k8s.git', branch:'master'
+      }
     }
     
+      stage("Build image") {
+            steps {
+                script {
+                    myapp = docker.build("igneous-sum-312016/hellowhale:${env.BUILD_ID}")
+                }
+            }
+        }
+    
+      stage("Push image") {
+            steps {
+                script {
+                    docker.withRegistry('https://eu.gcr.io/igneous-sum-312016/eschool_backend', 'gcr:gcr_eschool') {
+                            myapp.push("latest")
+                            myapp.push("${env.BUILD_ID}")
+                    }
+                }
+            }
+        }
+
+    
+//     stage('Deploy App') {
+//       steps {
+//         script {
+//           kubernetesDeploy(configs: "hellowhale.yml", kubeconfigId: "mykubeconfig")
+//         }
+//       }
+//     }
+
+   }
+
 }
