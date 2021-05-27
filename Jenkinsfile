@@ -3,9 +3,9 @@ pipeline {
   agent any
   environment 
       {
-        DB_HOST = "'jdbc:mysql://104.198.247.139:3306/eschool?-useUnicode=true&characterEncoding=utf8&createDatabaseIfNotExist=true&&autoReconnect=true&useSSL=false'"
-        DB_USER = 'eschool'
-        DB_PASSWORD = '1234'
+        DATASOURCE_URL = "'jdbc:mysql://104.198.247.139:3306/eschool?-useUnicode=true&characterEncoding=utf8&createDatabaseIfNotExist=true&&autoReconnect=true&useSSL=false'"
+        DATASOURCE_USERNAME = 'eschool'
+        DATASOURCE_PASSWORD = '1234'
       }
   stages {
 
@@ -23,7 +23,7 @@ pipeline {
             //   }
             steps {
                 script {
-                    myapp = docker.build("igneous-sum-312016/hellowhale:${BUILD_ID}", "--build-arg DB_HOST=$DB_HOST --build-arg DB_USER=$DB_USER --build-arg DB_PASSWORD=$DB_PASSWORD --no-cache .")
+                    myapp = docker.build("igneous-sum-312016/hellowhale:${BUILD_ID}", "--build-arg DATASOURCE_URL=$DATASOURCE_URL --build-arg DATASOURCE_USERNAME=$DATASOURCE_USERNAME --build-arg DATASOURCE_PASSWORD=$DATASOURCE_PASSWORD --no-cache .")
                 }
             }
         }
