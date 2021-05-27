@@ -3,7 +3,7 @@ pipeline {
   agent any
   environment 
       {
-        DATASOURCE_URL = "'jdbc:mysql://104.198.247.139:3306/eschool?-useUnicode=true&characterEncoding=utf8&createDatabaseIfNotExist=true&&autoReconnect=true&useSSL=false'"
+        DATASOURCE_URL = "104.198.247.139"
         DATASOURCE_USERNAME = 'eschool'
         DATASOURCE_PASSWORD = '1234'
       }
