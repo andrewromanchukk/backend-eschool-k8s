@@ -3,7 +3,7 @@ pipeline {
   agent any
   environment 
       {
-        DB_HOST = 'http://104.198.247.139:3306'
+        DB_HOST = ':jdbc:mysql://104.198.247.139:3306/eschool'
         DB_USER = 'eschool'
         DB_PASSWORD = '1234'
       }
