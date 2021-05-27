@@ -15,7 +15,6 @@ environement{
     }
     
       stage("Build image") {
-        
             steps {
                 script {
                     myapp = docker.build("igneous-sum-312016/hellowhale:${BUILD_ID}", "--build-arg DB_HOST=$DB_HOST --build-arg DB_USER=$DB_USER --build-arg DB_PASSWORD=$DB_PASSWORD --no-cache .")
